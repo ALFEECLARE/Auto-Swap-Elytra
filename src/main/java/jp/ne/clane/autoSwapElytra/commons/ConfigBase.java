@@ -51,8 +51,9 @@ public abstract class ConfigBase {
 				if (loadMap.containsKey(member.getName())) {
 					String value = loadMap.get(member.getName()); 
 					member.set(configClass,	switch (member.get(configClass)) {
-						case Enum enumValue -> Enum.valueOf((Class<? extends Enum>) member.getDeclaringClass(),value);
+						case Enum enumValue -> Enum.valueOf((Class<? extends Enum>) member.getType(),value);
 						case Boolean boolValue -> Boolean.valueOf(value);
+						case Integer intValue -> Integer.valueOf(value);
 						default -> value;
 					});
 				}

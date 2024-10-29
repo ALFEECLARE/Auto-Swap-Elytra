@@ -99,8 +99,8 @@ public class ClientPlayerMixin extends AbstractClientPlayer {
     private void tryUnequipElytra(CallbackInfo callbackinfo) {
     	Inventory inventory = this.getInventory();
 
-        // 降下中及び既にエリトラを外している(何もなしと鎧装備済みの両方)場合、何もしない
-        if (this.isFallFlying() || !(inventory.armor.get(CHEST_SLOT).getItem() instanceof ElytraItem))
+        // 前回交換済みではない、降下中、及び既にエリトラを外している(何もなしと鎧装備済みの両方)場合、何もしない
+        if (previousSwappedArmor == null || this.isFallFlying() || !(inventory.armor.get(CHEST_SLOT).getItem() instanceof ElytraItem))
         	return;
 
         // 交換対象の鎧を選択
@@ -162,6 +162,8 @@ public class ClientPlayerMixin extends AbstractClientPlayer {
 		            currentScore += EnchantmentUtils.getEnchantmentLevel(clientLevel, stack, Enchantments.BINDING_CURSE) * -999999;
 		            currentScore += EnchantmentUtils.getEnchantmentLevel(clientLevel, stack, Enchantments.VANISHING_CURSE) * -1000;
 		            currentScore += (stack.getMaxDamage() - stack.getDamageValue()) + stack.getMaxDamage() / 100;
+		            if (stack.getMaxDamage() - stack.getDamageValue() < 10)
+		            	currentScore = stack.getMaxDamage() - stack.getDamageValue();
 	            }
 	            if (stack.getMaxStackSize() > 1) {
 	            	if (item instanceof FireworkRocketItem) {
@@ -177,8 +179,6 @@ public class ClientPlayerMixin extends AbstractClientPlayer {
 	            }
 	            if (currentScore < 0)
 	            	continue;
-	            if (stack.getMaxDamage() - stack.getDamageValue() < 10)
-	            	currentScore = stack.getMaxDamage() - stack.getDamageValue();
 	            if (answer == null || maxScore < currentScore) {
 	            	answer = new Pair<InventoryType, Integer>(inventoryType, slot);
 	            	maxScore = currentScore;
