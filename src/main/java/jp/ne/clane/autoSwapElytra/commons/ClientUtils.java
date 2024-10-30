@@ -44,12 +44,18 @@ public class ClientUtils {
 
 	public static void swapPlayerInventorySlot(AbstractClientPlayer localPlayer,int fromSlotId, int toSlotId) {
 		Minecraft mc = Minecraft.getInstance();
-    	if (ipn != null) {
-			mc.gameMode.handleInventoryMouseClick(mc.player.inventoryMenu.containerId, toSlotId, 0, ClickType.PICKUP, localPlayer);
-			mc.gameMode.handleInventoryMouseClick(mc.player.inventoryMenu.containerId, fromSlotId,   0, ClickType.PICKUP, localPlayer);
-			mc.gameMode.handleInventoryMouseClick(mc.player.inventoryMenu.containerId, toSlotId, 0, ClickType.PICKUP, localPlayer);
+		//IPNのswapが装備品スロットの入れ替えに対応してないくさい？
+		//暫定対応。装備スロットとの入れ替えの場合は問答無用でバニラ方式。どっちかしかない場合は装備したままで問題ない可能性が高いので、大きな問題はない
+    	if (ipn == null || fromSlotId < 9 || toSlotId < 9) {
+    	//if (ipn == null) {
+			mc.gameMode.handleInventoryMouseClick(mc.player.inventoryMenu.containerId, toSlotId,   0, ClickType.PICKUP, localPlayer);
+			mc.gameMode.handleInventoryMouseClick(mc.player.inventoryMenu.containerId, fromSlotId, 0, ClickType.PICKUP, localPlayer);
+			mc.gameMode.handleInventoryMouseClick(mc.player.inventoryMenu.containerId, toSlotId,   0, ClickType.PICKUP, localPlayer);
     	} else {
     		IPN.getInstance().getContainerClicker().swap(toSlotId, fromSlotId);
+    		//IPN.getInstance().getContainerClicker().leftClick(toSlotId);
+    		//IPN.getInstance().getContainerClicker().leftClick(fromSlotId);
+    		//IPN.getInstance().getContainerClicker().leftClick(toSlotId);
     	}
 	}
 	
